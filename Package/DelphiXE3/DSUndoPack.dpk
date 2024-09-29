@@ -1,0 +1,55 @@
+package DSUndoPack;
+
+{$R *.res}
+{$IFDEF IMPLICITBUILDING This IFDEF should not be used by users}
+{$ALIGN 8}
+{$ASSERTIONS ON}
+{$BOOLEVAL OFF}
+{$DEBUGINFO ON}
+{$EXTENDEDSYNTAX ON}
+{$IMPORTEDDATA ON}
+{$IOCHECKS ON}
+{$LOCALSYMBOLS ON}
+{$LONGSTRINGS ON}
+{$OPENSTRINGS ON}
+{$OPTIMIZATION OFF}
+{$OVERFLOWCHECKS OFF}
+{$RANGECHECKS OFF}
+{$REFERENCEINFO ON}
+{$SAFEDIVIDE OFF}
+{$STACKFRAMES ON}
+{$TYPEDADDRESS OFF}
+{$VARSTRINGCHECKS ON}
+{$WRITEABLECONST OFF}
+{$MINENUMSIZE 1}
+{$IMAGEBASE $400000}
+{$DEFINE DEBUG}
+{$ENDIF IMPLICITBUILDING}
+{$RUNONLY}
+{$IMPLICITBUILD ON}
+
+requires
+  rtl,
+  DsCore;
+
+contains
+  DoublePropertyChange in '..\..\Source\DoublePropertyChange.pas',
+  MoveUndo in '..\..\Source\MoveUndo.pas',
+  ObjectPropertyChange in '..\..\Source\ObjectPropertyChange.pas',
+  UndoRedo in '..\..\Source\UndoRedo.pas',
+  UndoRedoAction in '..\..\Source\UndoRedoAction.pas',
+  UndoRedoOperation in '..\..\Source\UndoRedoOperation.pas',
+  PropertyObjectDoubleChange in '..\..\Source\PropertyObjectDoubleChange.pas',
+  IntegerPropertyChange in '..\..\Source\IntegerPropertyChange.pas',
+  PropertyObjectObjectChange in '..\..\Source\PropertyObjectObjectChange.pas',
+  LinkedListAddChange in '..\..\Source\LinkedListAddChange.pas',
+  LinkedListRemoveChange in '..\..\Source\LinkedListRemoveChange.pas',
+  ListInsertChange in '..\..\Source\ListInsertChange.pas',
+  ListRemoveChange in '..\..\Source\ListRemoveChange.pas',
+  ListGInsertChange in '..\..\Source\ListGInsertChange.pas',
+  ListGRemoveChange in '..\..\Source\ListGRemoveChange.pas',
+  CurrencyPropertyChange in '..\..\Source\CurrencyPropertyChange.pas',
+  DoublePropertyChange2 in '..\..\Source\DoublePropertyChange2.pas',
+  CurrencyPropertyChange2 in '..\..\Source\CurrencyPropertyChange2.pas';
+
+end.

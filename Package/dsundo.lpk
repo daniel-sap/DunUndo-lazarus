@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <Package Version="5">
+    <PathDelim Value="\"/>
+    <Name Value="DSUndo"/>
+    <Type Value="RunAndDesignTime"/>
+    <CompilerOptions>
+      <Version Value="11"/>
+      <PathDelim Value="\"/>
+      <SearchPaths>
+        <OtherUnitFiles Value="..\Source;..\Source\actions"/>
+        <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
+      </SearchPaths>
+      <Parsing>
+        <SyntaxOptions>
+          <SyntaxMode Value="Delphi"/>
+        </SyntaxOptions>
+      </Parsing>
+    </CompilerOptions>
+    <Files Count="19">
+      <Item1>
+        <Filename Value="..\Source\actions\CurrencyPropertyChange.pas"/>
+        <UnitName Value="CurrencyPropertyChange"/>
+      </Item1>
+      <Item2>
+        <Filename Value="..\Source\actions\CurrencyPropertyChange2.pas"/>
+        <UnitName Value="CurrencyPropertyChange2"/>
+      </Item2>
+      <Item3>
+        <Filename Value="..\Source\actions\DoublePropertyChange.pas"/>
+        <UnitName Value="DoublePropertyChange"/>
+      </Item3>
+      <Item4>
+        <Filename Value="..\Source\actions\DoublePropertyChange2.pas"/>
+        <UnitName Value="DoublePropertyChange2"/>
+      </Item4>
+      <Item5>
+        <Filename Value="..\Source\actions\IntegerPropertyChange.pas"/>
+        <UnitName Value="IntegerPropertyChange"/>
+      </Item5>
+      <Item6>
+        <Filename Value="..\Source\actions\LinkedListAddChange.pas"/>
+        <UnitName Value="LinkedListAddChange"/>
+      </Item6>
+      <Item7>
+        <Filename Value="..\Source\actions\LinkedListRemoveChange.pas"/>
+        <UnitName Value="LinkedListRemoveChange"/>
+      </Item7>
+      <Item8>
+        <Filename Value="..\Source\actions\ListGInsertChange.pas"/>
+        <UnitName Value="ListGInsertChange"/>
+      </Item8>
+      <Item9>
+        <Filename Value="..\Source\actions\ListGRemoveChange.pas"/>
+        <UnitName Value="ListGRemoveChange"/>
+      </Item9>
+      <Item10>
+        <Filename Value="..\Source\actions\ListInsertChange.pas"/>
+        <UnitName Value="ListInsertChange"/>
+      </Item10>
+      <Item11>
+        <Filename Value="..\Source\actions\ListRemoveChange.pas"/>
+        <UnitName Value="ListRemoveChange"/>
+      </Item11>
+      <Item12>
+        <Filename Value="..\Source\actions\MoveUndo.pas"/>
+        <UnitName Value="MoveUndo"/>
+      </Item12>
+      <Item13>
+        <Filename Value="..\Source\actions\ObjectPropertyChange.pas"/>
+        <UnitName Value="ObjectPropertyChange"/>
+      </Item13>
+      <Item14>
+        <Filename Value="..\Source\actions\PropertyObjectDoubleChange.pas"/>
+        <UnitName Value="PropertyObjectDoubleChange"/>
+      </Item14>
+      <Item15>
+        <Filename Value="..\Source\actions\PropertyObjectObjectChange.pas"/>
+        <UnitName Value="PropertyObjectObjectChange"/>
+      </Item15>
+      <Item16>
+        <Filename Value="..\Source\UndoRedo.pas"/>
+        <UnitName Value="UndoRedo"/>
+      </Item16>
+      <Item17>
+        <Filename Value="..\Source\UndoRedoAction.pas"/>
+        <UnitName Value="UndoRedoAction"/>
+      </Item17>
+      <Item18>
+        <Filename Value="..\Source\UndoRedoOperation.pas"/>
+        <UnitName Value="UndoRedoOperation"/>
+      </Item18>
+      <Item19>
+        <Filename Value="..\Source\actions\BooleanPropertyChange.pas"/>
+        <UnitName Value="BooleanPropertyChange"/>
+      </Item19>
+    </Files>
+    <CompatibilityMode Value="True"/>
+    <RequiredPkgs Count="2">
+      <Item1>
+        <PackageName Value="DSCore"/>
+      </Item1>
+      <Item2>
+        <PackageName Value="FCL"/>
+      </Item2>
+    </RequiredPkgs>
+    <UsageOptions>
+      <UnitPath Value="$(PkgOutDir)"/>
+    </UsageOptions>
+    <PublishOptions>
+      <Version Value="2"/>
+      <UseFileFilters Value="True"/>
+    </PublishOptions>
+  </Package>
+</CONFIG>
