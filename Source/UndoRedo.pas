@@ -21,14 +21,13 @@ type
     procedure undo();
     procedure redo();
     procedure clearData();
-
+  public
     property Actions: TList<TUndoAction> read fActions;
     property Tag: Integer read fTag write fTag;
   published
     property Prev: TUndoStep read fPrev write fPrev;
     property Next: TUndoStep read fNext write fNext;
   end;
-
 
   TUndo = class
   private
@@ -50,20 +49,20 @@ type
     fAfterStartStep: TNotifyEvent;
   protected
     function getCount: Integer; virtual;
-    procedure RemoveAfterActive;
+    procedure removeAfterActive();
   public
     constructor Create(); virtual;
     destructor Destroy; override;
     procedure append(aAction: TUndoAction);
     procedure undo();
     procedure redo();
-    function canUndo: Boolean;
-    function canRedo: Boolean;
-    procedure Clear;
-    procedure startStep; overload;
+    function canUndo(): Boolean;
+    function canRedo(): Boolean;
+    procedure clear();
+    procedure startStep(); overload;
     procedure startStep(aGroup: Integer); overload;
     procedure endStep();
-
+  public
     procedure registerActions(aActions: TList<TUndoAction>);
     procedure registerObjectPropertyChange(aObject: TObject; aPropertyName: string; aOldValue: TObject; aNewValue: TObject; ownsData: Boolean = false);
     procedure registerIntegerPropertyChange(aObject: TObject; aPropName: String; aOld, aNew: Integer);
@@ -77,7 +76,7 @@ type
     procedure registerListDeleteUndo(aElement: TObject; aList: TList);
     procedure registerListGAppendUndo(aElement: TObject; aList: TList<TObject>);
     procedure registerListGDeleteUndo(aElement: TObject; aList: TList<TObject>);
-
+  public
     property Active: TUndoStep read fActive;
     property Count: Integer read getCount;
     property InOperation: Boolean read fInOperation;
@@ -86,7 +85,7 @@ type
   public
     procedure startOperation;
     procedure endOperation;
-
+  public
     property NewStep: TUndoStep read fNewStep;
     property BeforeUndo: TNotifyEvent read fBeforeUndo write fBeforeUndo;
     property AfterUndo: TNotifyEvent read fAfterUndo write fAfterUndo;
@@ -247,7 +246,7 @@ begin
     fOnEndStep(Self);
 end;
 
-procedure TUndo.RemoveAfterActive;
+procedure TUndo.removeAfterActive;
 var
   node, nextNode: TUndoStep;
 begin
@@ -265,7 +264,7 @@ begin
   end;
 end;
 
-procedure TUndo.Clear;
+procedure TUndo.clear;
 begin
   fActive := nil;
   fSteps.clear();
@@ -291,7 +290,7 @@ begin
   objectPropertyChange.OldValue := aOldValue;
   objectPropertyChange.NewValue := aNewValue;
   objectPropertyChange.OwnsData := ownsData;
-  Append(objectPropertyChange);
+  append(objectPropertyChange);
 end;
 
 procedure TUndo.registerIntegerPropertyChange(aObject: TObject; aPropName: String; aOld, aNew: Integer);
@@ -301,7 +300,7 @@ begin
   undoAction := TIntegerPropertyChange.Create(aObject, aPropName);
   undoAction.OldValue := aOld;
   undoAction.NewValue := aNew;
-  Append(undoAction);
+  append(undoAction);
 end;
 
 procedure TUndo.registerEnumPropertyChange(aObject: TObject; aPropName: String; aOld, aNew: Integer);
@@ -311,7 +310,7 @@ begin
   action := TEnumPropertyChange.Create(aObject, aPropName);
   action.OldValue := aOld;
   action.NewValue := aNew;
-  Append(action);
+  append(action);
 end;
 
 procedure TUndo.registerDoublePropertyChange(aObject: TObject; aPropName: String; aOld, aNew: Double);
@@ -319,7 +318,7 @@ var
   undoAction: TDoublePropertyChange;
 begin
   undoAction := TDoublePropertyChange.Create(aObject, aPropName, aOld, aNew);
-  Append(undoAction);
+  append(undoAction);
 end;
 
 procedure TUndo.registerDoublePropertyChange(aObject: TObject; aPropName: String);
@@ -335,7 +334,7 @@ var
   undoAction: TCurrencyPropertyChange;
 begin
   undoAction := TCurrencyPropertyChange.Create(aObject, aPropName, aOld, aNew);
-  Append(undoAction);
+  append(undoAction);
 end;
 
 procedure TUndo.registerCurrencyPropertyChange2(aObject: TObject; aPropName: String);
@@ -343,7 +342,7 @@ var
   undoAction: TCurrencyPropertyChange2;
 begin
   undoAction := TCurrencyPropertyChange2.Create(aObject, aPropName);
-  Append(undoAction);
+  append(undoAction);
 end;
 
 procedure TUndo.registerBooleanPropertyChange(aObject: TObject;
@@ -352,7 +351,7 @@ var
   undoAction: TBooleanPropertyChange;
 begin
   undoAction := TBooleanPropertyChange.Create(aObject, PropName, OldValue, NewValue);
-  Append(undoAction);
+  append(undoAction);
 end;
 
 procedure TUndo.registerListAppendUndo(aElement: TObject; aList: TList);

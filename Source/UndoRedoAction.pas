@@ -19,7 +19,7 @@ type
     procedure redo(); virtual; abstract;
     procedure clearData(); virtual;
     procedure beforeChange(); virtual;
-
+  public
     property ChangedObject: TObject read fChangedObject write setChangedObject;
     property OwnsData: Boolean read fOwnsData write fOwnsData;
   end;
