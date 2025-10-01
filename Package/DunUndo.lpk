@@ -97,7 +97,7 @@
     <CompatibilityMode Value="True"/>
     <RequiredPkgs Count="2">
       <Item1>
-        <PackageName Value="DSCore"/>
+        <PackageName Value="DunCore"/>
       </Item1>
       <Item2>
         <PackageName Value="FCL"/>
