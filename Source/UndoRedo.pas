@@ -3,96 +3,107 @@
 interface
 
 uses
-  Generics.Collections, UndoRedoAction, UndoRedoOperation, Classes, Contnrs,
+  Generics.Collections, Dun.UndoChange, UndoRedoOperation, Classes, Contnrs,
   DLinkedList;
 
 type
 
-  TUndoStep = class
+  /// Represents a single, logical user operation that can be undone or redone.
+  /// It holds list of changes which are the actual changes to a model
+  TUndoAction = class
   private
-    fPrev: TUndoStep;
-    fNext: TUndoStep;
+    fPrev: TUndoAction;
+    fNext: TUndoAction;
     fTag: Integer;
-    fActions: TList<TUndoAction>;
+    fChanges: TList<TUndoChange>;
   public
     GroupId: Integer;
     constructor Create(); virtual;
     destructor Destroy(); override;
-    procedure undo();
-    procedure redo();
-    procedure clearData();
+    procedure Undo();
+    procedure Redo();
+    procedure ClearData();
   public
-    property Actions: TList<TUndoAction> read fActions;
+    property Changes: TList<TUndoChange> read fChanges;
     property Tag: Integer read fTag write fTag;
   published
-    property Prev: TUndoStep read fPrev write fPrev;
-    property Next: TUndoStep read fNext write fNext;
+    property Prev: TUndoAction read fPrev write fPrev;
+    property Next: TUndoAction read fNext write fNext;
   end;
 
+  /// Main engine for managing the undo/redo.
   TUndo = class
   private
-    fActive: TUndoStep;
-    fStep: Boolean;
+    fActive: TUndoAction;
+    fAutoStartAction: Boolean;
+    fInAction: Boolean;
     fInOperation: Boolean;
 
-    fNewStep: TUndoStep;
+    fNewAction: TUndoAction;
 
     fOperations: TObjectList;
     fCurrentOperation: TUndoRedoOperation;
 
-    fSteps: TDLinkedList<TUndoStep>;
+    fActions: TDLinkedList<TUndoAction>;
     fAfterUndo: TNotifyEvent;
     fBeforeUndo: TNotifyEvent;
     fAfterRedo: TNotifyEvent;
     fBeforeRedo: TNotifyEvent;
-    fOnEndStep: TNotifyEvent;
-    fAfterStartStep: TNotifyEvent;
+    fAfterEndAction: TNotifyEvent;
+    fAfterStartAction: TNotifyEvent;
   protected
-    function getCount: Integer; virtual;
-    procedure removeAfterActive();
+    function GetCount: Integer; virtual;
+    procedure RemoveAfterActive();
+    procedure DoBeforeUndo(); virtual;
+    procedure DoAfterUndo(); virtual;
+    procedure DoBeforeRedo(); virtual;
+    procedure DoAfterRedo(); virtual;
+    procedure DoAfterStartAction(); virtual;
+    procedure DoAfterEndAction(); virtual;
   public
     constructor Create(); virtual;
     destructor Destroy; override;
-    procedure append(aAction: TUndoAction);
-    procedure undo();
-    procedure redo();
-    function canUndo(): Boolean;
-    function canRedo(): Boolean;
-    procedure clear();
-    procedure startStep(); overload;
-    procedure startStep(aGroup: Integer); overload;
-    procedure endStep();
+    procedure Append(aChange: TUndoChange);
+    procedure Undo();
+    procedure Redo();
+    function CanUndo(): Boolean;
+    function CanRedo(): Boolean;
+    procedure Clear();
+    procedure StartAction(); overload;
+    procedure StartAction(aGroup: Integer); overload;
+    procedure EndAction();
   public
-    procedure registerActions(aActions: TList<TUndoAction>);
-    procedure registerObjectPropertyChange(aObject: TObject; aPropertyName: string; aOldValue: TObject; aNewValue: TObject; ownsData: Boolean = false);
-    procedure registerIntegerPropertyChange(aObject: TObject; aPropName: String; aOld, aNew: Integer);
-    procedure registerEnumPropertyChange(aObject: TObject; aPropName: String; aOld, aNew: Integer);
-    procedure registerDoublePropertyChange(aObject: TObject; aPropName: String; aOld, aNew: Double); overload;
-    procedure registerDoublePropertyChange(aObject: TObject; aPropName: String); overload;
-    procedure registerCurrencyPropertyChange(aObject: TObject; aPropName: String; aOld, aNew: Double);
-    procedure registerCurrencyPropertyChange2(aObject: TObject; aPropName: String);
-    procedure registerBooleanPropertyChange(aObject: TObject; PropName: String; OldValue, NewValue: Boolean);
-    procedure registerListAppendUndo(aElement: TObject; aList: TList);
-    procedure registerListDeleteUndo(aElement: TObject; aList: TList);
-    procedure registerListGAppendUndo(aElement: TObject; aList: TList<TObject>);
-    procedure registerListGDeleteUndo(aElement: TObject; aList: TList<TObject>);
+    procedure RegisterChanges(aChanges: TList<TUndoChange>);
+    procedure RegisterObjectPropertyChange(aObject: TObject; aPropertyName: string; aOldValue: TObject; aNewValue: TObject; ownsData: Boolean = False);
+    procedure RegisterIntegerPropertyChange(aObject: TObject; aPropName: String; aOld, aNew: Integer);
+    procedure RegisterEnumPropertyChange(aObject: TObject; aPropName: String; aOld, aNew: Integer);
+    procedure RegisterDoublePropertyChange(aObject: TObject; aPropName: String; aOld, aNew: Double); overload;
+    procedure RegisterDoublePropertyChange(aObject: TObject; aPropName: String); overload;
+    procedure RegisterCurrencyPropertyChange(aObject: TObject; aPropName: String; aOld, aNew: Double);
+    procedure RegisterCurrencyPropertyChange2(aObject: TObject; aPropName: String);
+    procedure RegisterBooleanPropertyChange(aObject: TObject; PropName: String; OldValue, NewValue: Boolean);
+    procedure RegisterListAppendUndo(aElement: TObject; aList: TList);
+    procedure RegisterListDeleteUndo(aElement: TObject; aList: TList);
+    procedure RegisterListGAppendUndo(aElement: TObject; aList: TList<TObject>);
+    procedure RegisterListGDeleteUndo(aElement: TObject; aList: TList<TObject>);
   public
-    property Active: TUndoStep read fActive;
+    property Active: TUndoAction read fActive;
     property Count: Integer read getCount;
     property InOperation: Boolean read fInOperation;
-    property inStep: Boolean read fStep;
-    property Steps: TDLinkedList<TUndoStep> read fSteps;
+    property InAction: Boolean read fInAction;
+    property Actions: TDLinkedList<TUndoAction> read fActions;
   public
-    procedure startOperation;
-    procedure endOperation;
+    procedure StartOperation;
+    procedure EndOperation;
   public
-    property NewStep: TUndoStep read fNewStep;
+    property NewAction: TUndoAction read fNewAction;
+    property AutoStartAction: Boolean read fAutoStartAction write fAutoStartAction;
     property BeforeUndo: TNotifyEvent read fBeforeUndo write fBeforeUndo;
     property AfterUndo: TNotifyEvent read fAfterUndo write fAfterUndo;
     property BeforeRedo: TNotifyEvent read fBeforeRedo write fBeforeRedo;
     property AfterRedo: TNotifyEvent read fAfterRedo write fAfterRedo;
-    property AfterStartStep: TNotifyEvent read fAfterStartStep write fAfterStartStep;
-    property OnEndStep: TNotifyEvent read fOnEndStep write fOnEndStep;
+    property AfterStartAction: TNotifyEvent read fAfterStartAction write fAfterStartAction;
+    property AfterEndAction: TNotifyEvent read fAfterEndAction write fAfterEndAction;
   end;
 
 implementation
@@ -106,71 +117,64 @@ constructor TUndo.Create();
 begin
   inherited Create;
   fOperations := TObjectList.Create();
-  fSteps := TDLinkedList<TUndoStep>.Create();
+  fActions := TDLinkedList<TUndoAction>.Create();
 
   fActive := nil;
-  fNewStep := nil;
-  fStep := False;
+  fAutoStartAction := True;
+  fNewAction := nil;
+  fInAction := False;
   fInOperation := False;
 end;
 
 destructor TUndo.Destroy;
 begin
-  freeAndNil(fOperations);
-  freeAndNil(fSteps);
+  FreeAndNil(fOperations);
+  FreeAndNil(fActions);
   inherited Destroy;
 end;
 
-// ����� True, ������ ���� �� �� ������� �������� Undo.
-// � ���� � ��������, ������ ��� ������� ������.
-function TUndo.canUndo: Boolean;
+function TUndo.CanUndo: Boolean;
 begin
   Result := Active <> nil;
 end;
 
-// ����� True, ������ ���� �� �� ������� �������� Redo. � ���� � ��������,
-// ������ �������� Action ��� Child, � ��� �������� Action e nil ������ Action
-// � ������� �� ������� Redo ����������.
-function TUndo.canRedo: Boolean;
+function TUndo.CanRedo: Boolean;
 begin
   if Active = nil then
-    Result := not fSteps.isEmpty
+    Result := not fActions.isEmpty
   else
     Result := Active.Next <> nil;
 end;
 
-procedure TUndo.undo;
+procedure TUndo.Undo;
 begin
-  if not canUndo then
-    exit;
+  if not CanUndo then
+    Exit;
 
-  if Assigned(BeforeUndo) then
-    fBeforeUndo(Self);
+  DoBeforeUndo();
 
   fInOperation := True;
   try
-    fActive.undo();
+    fActive.Undo();
     fActive := fActive.Prev;
   finally
     fInOperation := False;
   end;
 
-  if Assigned(AfterUndo) then
-    fAfterUndo(Self);
+  DoAfterUndo();
 end;
 
-procedure TUndo.redo;
+procedure TUndo.Redo;
 begin
-  if not canRedo then
-    exit;
+  if not CanRedo then
+    Exit;
 
-  if Assigned(BeforeRedo) then
-    fBeforeRedo(Self);
+  DoBeforeRedo();
 
   fInOperation := True;
   try
     if (fActive = nil) then
-      fActive := fSteps.First
+      fActive := fActions.First
     else
       fActive := Active.Next;
 
@@ -179,273 +183,312 @@ begin
     fInOperation := False;
   end;
 
-  if Assigned(AfterRedo) then
-    fAfterRedo(Self);
+  DoAfterRedo();
 end;
 
-procedure TUndo.registerActions(aActions: TList<TUndoAction>);
+procedure TUndo.RegisterChanges(aChanges: TList<TUndoChange>);
 var
-  action: TUndoAction;
+  Change: TUndoChange;
 begin
-  for action in aActions do begin
-    append(action);
+  for Change in aChanges do begin
+    Append(Change);
   end;
 end;
 
-procedure TUndo.append(aAction: TUndoAction);
+procedure TUndo.Append(aChange: TUndoChange);
 begin
-  if not fStep then begin
-    startStep();
-    // TODO - log if there is problem. Check software not to append without step
+  if not InAction then begin
+    if AutoStartAction then
+      StartAction()
+    else
+      raise Exception.Create('No active Undo Action');
   end;
 
-  fNewStep.Actions.Add(aAction);
+  fNewAction.Changes.Add(aChange);
 end;
 
-function TUndo.getCount: Integer;
+function TUndo.GetCount: Integer;
 begin
-  Result := fSteps.Size;
+  Result := fActions.Size;
 end;
 
-procedure TUndo.startStep;
+procedure TUndo.StartAction;
 begin
-  endStep;
-  fStep := True;
-  fNewStep := TUndoStep.Create();
-  if Assigned(fAfterStartStep) then
-    fAfterStartStep(Self);
+  EndAction();
+  fInAction := True;
+  fNewAction := TUndoAction.Create();
+  DoAfterStartAction();
 end;
 
-procedure TUndo.startStep(aGroup: Integer);
+procedure TUndo.StartAction(aGroup: Integer);
 begin
-  endStep;
-  fStep := True;
-  fNewStep := TUndoStep.Create();
-  fNewStep.GroupId := aGroup;
-  if Assigned(fAfterStartStep) then
-    fAfterStartStep(Self);
+  EndAction();
+  fInAction := True;
+  fNewAction := TUndoAction.Create();
+  fNewAction.GroupId := aGroup;
+  DoAfterStartAction();
 end;
 
-procedure TUndo.endStep;
+procedure TUndo.EndAction;
 begin
-  if not fStep then
-    exit;
+  if not fInAction then
+    Exit;
 
-  if fNewStep.Actions.Count = 0 then begin
-    fStep := False;
-    freeAndNil(fNewStep);
-    exit;
+  if fNewAction.Changes.Count = 0 then begin
+    fInAction := False;
+    FreeAndNil(fNewAction);
+    Exit;
   end;
 
-  removeAfterActive();
-  fSteps.addAfter(fNewStep, fActive);
-  fActive := fNewStep;
-  fNewStep := nil;
-  fStep := False;
-  if assigned(OnEndStep) then
-    fOnEndStep(Self);
+  RemoveAfterActive();
+  fActions.addAfter(fNewAction, fActive);
+  fActive := fNewAction;
+  fNewAction := nil;
+  fInAction := False;
+  DoAfterEndAction();
 end;
 
-procedure TUndo.removeAfterActive;
+procedure TUndo.RemoveAfterActive;
 var
-  node, nextNode: TUndoStep;
+  Node, NextNode: TUndoAction;
 begin
   if Active = nil then
-    fSteps.clear
+    fActions.Clear
   else begin
-    node := Active.Next;
+    Node := Active.Next;
     Active.Next := nil;
-    while node <> nil do begin
-      nextNode := node.Next;
-      node.clearData();
-      node.Free;
-      node := nextNode;
+    while Node <> nil do begin
+      NextNode := Node.Next;
+      Node.ClearData();
+      Node.Free;
+      Node := NextNode;
     end;
   end;
 end;
 
-procedure TUndo.clear;
+procedure TUndo.DoBeforeUndo();
 begin
-  fActive := nil;
-  fSteps.clear();
+  if Assigned(fBeforeUndo) then
+    fBeforeUndo(Self);
 end;
 
-procedure TUndo.startOperation;
+procedure TUndo.DoAfterUndo();
+begin
+  if Assigned(fAfterUndo) then
+    fAfterUndo(Self);
+end;
+
+procedure TUndo.DoBeforeRedo();
+begin
+  if Assigned(fBeforeRedo) then
+    fBeforeRedo(Self);
+end;
+
+procedure TUndo.DoAfterRedo();
+begin
+  if Assigned(fAfterRedo) then
+    fAfterRedo(Self);
+end;
+
+procedure TUndo.DoAfterStartAction();
+begin
+  if Assigned(fAfterStartAction) then
+    fAfterStartAction(Self);
+end;
+
+procedure TUndo.DoAfterEndAction();
+begin
+  if Assigned(fAfterEndAction) then
+    fAfterEndAction(Self);
+end;
+
+procedure TUndo.Clear;
+begin
+  fActive := nil;
+  fActions.Clear();
+end;
+
+procedure TUndo.StartOperation;
 begin
   if (fCurrentOperation <> nil) then
     raise Exception.Create('Undo operation has not finished');
   fCurrentOperation := TUndoRedoOperation.Create();
 end;
 
-procedure TUndo.endOperation;
+procedure TUndo.EndOperation;
 begin
   fOperations.Add(fCurrentOperation);
 end;
 
-procedure TUndo.registerObjectPropertyChange(aObject: TObject; aPropertyName: string; aOldValue: TObject; aNewValue: TObject; ownsData: Boolean);
+procedure TUndo.RegisterObjectPropertyChange(aObject: TObject; aPropertyName: string; aOldValue: TObject; aNewValue: TObject; ownsData: Boolean);
 var
-  objectPropertyChange: TObjectPropertyChange;
+  Change: TObjectPropertyChange;
 begin
-  objectPropertyChange := TObjectPropertyChange.Create(aObject, aPropertyName);
-  objectPropertyChange.OldValue := aOldValue;
-  objectPropertyChange.NewValue := aNewValue;
-  objectPropertyChange.OwnsData := ownsData;
-  append(objectPropertyChange);
+  Change := TObjectPropertyChange.Create(aObject, aPropertyName);
+  Change.OldValue := aOldValue;
+  Change.NewValue := aNewValue;
+  Change.OwnsData := ownsData;
+  Append(Change);
 end;
 
-procedure TUndo.registerIntegerPropertyChange(aObject: TObject; aPropName: String; aOld, aNew: Integer);
+procedure TUndo.RegisterIntegerPropertyChange(aObject: TObject;
+  aPropName: String; aOld, aNew: Integer);
 var
-  undoAction: TIntegerPropertyChange;
+  Change: TIntegerPropertyChange;
 begin
-  undoAction := TIntegerPropertyChange.Create(aObject, aPropName);
-  undoAction.OldValue := aOld;
-  undoAction.NewValue := aNew;
-  append(undoAction);
+  Change := TIntegerPropertyChange.Create(aObject, aPropName);
+  Change.OldValue := aOld;
+  Change.NewValue := aNew;
+  Append(Change);
 end;
 
-procedure TUndo.registerEnumPropertyChange(aObject: TObject; aPropName: String; aOld, aNew: Integer);
+procedure TUndo.RegisterEnumPropertyChange(aObject: TObject; aPropName: String;
+  aOld, aNew: Integer);
 var
-  action: TEnumPropertyChange;
+  Change: TEnumPropertyChange;
 begin
-  action := TEnumPropertyChange.Create(aObject, aPropName);
-  action.OldValue := aOld;
-  action.NewValue := aNew;
-  append(action);
+  Change := TEnumPropertyChange.Create(aObject, aPropName);
+  Change.OldValue := aOld;
+  Change.NewValue := aNew;
+  Append(Change);
 end;
 
-procedure TUndo.registerDoublePropertyChange(aObject: TObject; aPropName: String; aOld, aNew: Double);
+procedure TUndo.RegisterDoublePropertyChange(aObject: TObject;
+  aPropName: String; aOld, aNew: Double);
 var
-  undoAction: TDoublePropertyChange;
+  Change: TDoublePropertyChange;
 begin
-  undoAction := TDoublePropertyChange.Create(aObject, aPropName, aOld, aNew);
-  append(undoAction);
+  Change := TDoublePropertyChange.Create(aObject, aPropName, aOld, aNew);
+  Append(Change);
 end;
 
-procedure TUndo.registerDoublePropertyChange(aObject: TObject; aPropName: String);
+procedure TUndo.RegisterDoublePropertyChange(aObject: TObject; aPropName: String);
 var
-  undoAction: TDoublePropertyChange2;
+  Change: TDoublePropertyChange2;
 begin
-  undoAction := TDoublePropertyChange2.Create(aObject, aPropName);
-  Append(undoAction);
+  Change := TDoublePropertyChange2.Create(aObject, aPropName);
+  Append(Change);
 end;
 
-procedure TUndo.registerCurrencyPropertyChange(aObject: TObject; aPropName: String; aOld, aNew: Double);
+procedure TUndo.RegisterCurrencyPropertyChange(aObject: TObject;
+  aPropName: String; aOld, aNew: Double);
 var
-  undoAction: TCurrencyPropertyChange;
+  Change: TCurrencyPropertyChange;
 begin
-  undoAction := TCurrencyPropertyChange.Create(aObject, aPropName, aOld, aNew);
-  append(undoAction);
+  Change := TCurrencyPropertyChange.Create(aObject, aPropName, aOld, aNew);
+  Append(Change);
 end;
 
-procedure TUndo.registerCurrencyPropertyChange2(aObject: TObject; aPropName: String);
+procedure TUndo.RegisterCurrencyPropertyChange2(aObject: TObject;
+  aPropName: String);
 var
-  undoAction: TCurrencyPropertyChange2;
+  Change: TCurrencyPropertyChange2;
 begin
-  undoAction := TCurrencyPropertyChange2.Create(aObject, aPropName);
-  append(undoAction);
+  Change := TCurrencyPropertyChange2.Create(aObject, aPropName);
+  Append(Change);
 end;
 
-procedure TUndo.registerBooleanPropertyChange(aObject: TObject;
+procedure TUndo.RegisterBooleanPropertyChange(aObject: TObject;
   PropName: String; OldValue, NewValue: Boolean);
 var
-  undoAction: TBooleanPropertyChange;
+  Change: TBooleanPropertyChange;
 begin
-  undoAction := TBooleanPropertyChange.Create(aObject, PropName, OldValue, NewValue);
-  append(undoAction);
+  Change := TBooleanPropertyChange.Create(aObject, PropName, OldValue, NewValue);
+  Append(Change);
 end;
 
-procedure TUndo.registerListAppendUndo(aElement: TObject; aList: TList);
+procedure TUndo.RegisterListAppendUndo(aElement: TObject; aList: TList);
 var
-  vUndo: TListInsertChange;
+  Change: TListInsertChange;
 begin
-  vUndo := TListInsertChange.Create();
-  vUndo.Element := aElement;
-  vUndo.List := aList;
-  vUndo.fIndex := aList.IndexOf(aElement);
-  append(vUndo);
+  Change := TListInsertChange.Create();
+  Change.Element := aElement;
+  Change.List := aList;
+  Change.fIndex := aList.IndexOf(aElement);
+  Append(Change);
 end;
 
-procedure TUndo.registerListDeleteUndo(aElement: TObject; aList: TList);
+procedure TUndo.RegisterListDeleteUndo(aElement: TObject; aList: TList);
 var
-  vUndo: TListRemoveChange;
+  Change: TListRemoveChange;
 begin
-  vUndo := TListRemoveChange.Create();
-  vUndo.Element := aElement;
-  vUndo.List := aList;
-  vUndo.fIndex := aList.IndexOf(aElement);
-  append(vUndo);
+  Change := TListRemoveChange.Create();
+  Change.Element := aElement;
+  Change.List := aList;
+  Change.fIndex := aList.IndexOf(aElement);
+  Append(Change);
 end;
 
-procedure TUndo.registerListGAppendUndo(aElement: TObject; aList: TList<TObject>);
+procedure TUndo.RegisterListGAppendUndo(aElement: TObject; aList: TList<TObject>);
 var
-  vUndo: TListGInsertChange;
+  Change: TListGInsertChange;
 begin
-  vUndo := TListGInsertChange.Create();
-  vUndo.Element := aElement;
-  vUndo.List := aList;
-  vUndo.fIndex := aList.IndexOf(aElement);
-  append(vUndo);
+  Change := TListGInsertChange.Create();
+  Change.Element := aElement;
+  Change.List := aList;
+  Change.fIndex := aList.IndexOf(aElement);
+  Append(Change);
 end;
 
-procedure TUndo.registerListGDeleteUndo(aElement: TObject; aList: TList<TObject>);
+procedure TUndo.RegisterListGDeleteUndo(aElement: TObject; aList: TList<TObject>);
 var
-  vUndo: TListGRemoveChange;
+  Change: TListGRemoveChange;
 begin
-  vUndo := TListGRemoveChange.Create();
-  vUndo.Element := aElement;
-  vUndo.List := aList;
-  vUndo.fIndex := aList.IndexOf(aElement);
-  append(vUndo);
+  Change := TListGRemoveChange.Create();
+  Change.Element := aElement;
+  Change.List := aList;
+  Change.fIndex := aList.IndexOf(aElement);
+  Append(Change);
 end;
 
-{ TUndoStep }
+{ TUndoAction }
 
-constructor TUndoStep.Create;
+constructor TUndoAction.Create;
 begin
   fPrev := nil;
   fNext := nil;
-  fActions := TList<TUndoAction>.Create;
+  fChanges := TList<TUndoChange>.Create;
   GroupId := -1;
 end;
 
-destructor TUndoStep.Destroy;
+destructor TUndoAction.Destroy;
 var
-  action: TUndoAction;
+  Change: TUndoChange;
 begin
-  while fActions.Count > 0 do begin
-    action := fActions[0];
-    fActions.Delete(0);
-    action.Free;
+  while fChanges.Count > 0 do begin
+    Change := fChanges[0];
+    fChanges.Delete(0);
+    Change.Free;
   end;
 
-  freeAndNil(fActions);
+  FreeAndNil(fChanges);
   inherited;
 end;
 
-procedure TUndoStep.clearData;
+procedure TUndoAction.clearData;
 var
-  action: TUndoAction;
+  Change: TUndoChange;
 begin
-  for action in fActions do begin
-    action.clearData();
+  for Change in fChanges do begin
+    Change.clearData();
   end;
 end;
 
-procedure TUndoStep.undo;
+procedure TUndoAction.Undo;
 var
   i: Integer;
 begin
-  for i := fActions.Count - 1 downto 0 do begin
-    fActions[i].undo();
+  for i := fChanges.Count - 1 downto 0 do begin
+    fChanges[i].Undo();
   end;
 end;
 
-procedure TUndoStep.redo;
+procedure TUndoAction.Redo;
 var
-  action: TUndoAction;
+  Change: TUndoChange;
 begin
-  for action in fActions do begin
-    action.redo();
+  for Change in fChanges do begin
+    Change.Redo();
   end;
 end;
 

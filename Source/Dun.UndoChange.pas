@@ -1,4 +1,4 @@
-unit UndoRedoAction;
+unit Dun.UndoChange;
 
 interface
 
@@ -7,7 +7,7 @@ uses
 
 type
 
-  TUndoAction = class abstract
+  TUndoChange = class abstract
   private
     fChangedObject: TObject;
     fOwnsData: Boolean;
@@ -15,10 +15,10 @@ type
   public
     constructor Create(); virtual;
     destructor Destroy; override;
-    procedure undo(); virtual; abstract;
-    procedure redo(); virtual; abstract;
-    procedure clearData(); virtual;
-    procedure beforeChange(); virtual;
+    procedure Undo(); virtual; abstract;
+    procedure Redo(); virtual; abstract;
+    procedure ClearData(); virtual;
+    procedure BeforeChange(); virtual;
   public
     property ChangedObject: TObject read fChangedObject write setChangedObject;
     property OwnsData: Boolean read fOwnsData write fOwnsData;
@@ -26,29 +26,29 @@ type
 
 implementation
 
-constructor TUndoAction.Create();
+constructor TUndoChange.Create();
 begin
   inherited Create;
   fOwnsData := False;
 end;
 
-destructor TUndoAction.Destroy;
+destructor TUndoChange.Destroy;
 begin
   inherited Destroy;
 end;
 
-procedure TUndoAction.setChangedObject(const Value: TObject);
+procedure TUndoChange.SetChangedObject(const Value: TObject);
 begin
   fChangedObject := Value;
-  beforeChange();
+  BeforeChange();
 end;
 
-procedure TUndoAction.beforeChange;
+procedure TUndoChange.BeforeChange;
 begin
 
 end;
 
-procedure TUndoAction.clearData;
+procedure TUndoChange.ClearData;
 begin
 
 end;

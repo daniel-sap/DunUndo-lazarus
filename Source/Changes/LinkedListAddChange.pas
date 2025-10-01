@@ -3,11 +3,11 @@ unit LinkedListAddChange;
 interface
 
 uses
-  UndoRedoAction, LinkedList;
+  Dun.UndoChange, LinkedList;
 
 type
 
-  TLinkedListAddChange = class(TUndoAction)
+  TLinkedListAddChange = class(TUndoChange)
   public
     List: TLinkedList<TObject>;
     Node: TObject;

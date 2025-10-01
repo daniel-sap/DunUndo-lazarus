@@ -3,11 +3,11 @@ unit DoublePropertyChange2;
 interface
 
 uses
-  UndoRedoAction;
+  Dun.UndoChange;
 
 type
 
-  TDoublePropertyChange2 = class(TUndoAction)
+  TDoublePropertyChange2 = class(TUndoChange)
   private
     fChangedObject: TObject;
     fPropertyName: string;

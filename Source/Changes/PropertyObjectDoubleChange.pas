@@ -3,11 +3,11 @@ unit PropertyObjectDoubleChange;
 interface
 
 uses
-  UndoRedoAction, PropertyObject;
+  Dun.UndoChange, PropertyObject;
 
 type
 
-  TPropertyObjectDoubleChange = class(TUndoAction)
+  TPropertyObjectDoubleChange = class(TUndoChange)
   private
     fPropertyName: string;
     fOldValue: Double;

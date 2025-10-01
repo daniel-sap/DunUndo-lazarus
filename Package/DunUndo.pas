@@ -2,7 +2,7 @@
   This source is only used to compile and install the package.
  }
 
-unit DSUndo;
+unit DunUndo;
 
 {$warn 5023 off : no warning about unused units}
 interface
@@ -13,14 +13,8 @@ uses
   LinkedListRemoveChange, ListGInsertChange, ListGRemoveChange, 
   ListInsertChange, ListRemoveChange, MoveUndo, ObjectPropertyChange, 
   PropertyObjectDoubleChange, PropertyObjectObjectChange, UndoRedo, 
-  UndoRedoAction, UndoRedoOperation, BooleanPropertyChange, LazarusPackageIntf;
+  UndoRedoOperation, BooleanPropertyChange, Dun.UndoChange;
 
 implementation
 
-procedure Register;
-begin
-end;
-
-initialization
-  RegisterPackage('DSUndo', @Register);
 end.

@@ -3,11 +3,11 @@ unit LinkedListRemoveChange;
 interface
 
 uses
-  UndoRedoAction, LinkedList;
+  Dun.UndoChange, LinkedList;
 
 type
 
-  TLinkedListRemoveChange = class(TUndoAction)
+  TLinkedListRemoveChange = class(TUndoChange)
   public
     List: TLinkedList<TObject>;
     Node: TObject;

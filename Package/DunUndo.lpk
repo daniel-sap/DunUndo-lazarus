@@ -2,13 +2,12 @@
 <CONFIG>
   <Package Version="5">
     <PathDelim Value="\"/>
-    <Name Value="DSUndo"/>
-    <Type Value="RunAndDesignTime"/>
+    <Name Value="DunUndo"/>
     <CompilerOptions>
       <Version Value="11"/>
       <PathDelim Value="\"/>
       <SearchPaths>
-        <OtherUnitFiles Value="..\Source;..\Source\actions"/>
+        <OtherUnitFiles Value="..\Source;..\Source\Changes"/>
         <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
       <Parsing>
@@ -19,63 +18,63 @@
     </CompilerOptions>
     <Files Count="19">
       <Item1>
-        <Filename Value="..\Source\actions\CurrencyPropertyChange.pas"/>
+        <Filename Value="..\Source\Changes\CurrencyPropertyChange.pas"/>
         <UnitName Value="CurrencyPropertyChange"/>
       </Item1>
       <Item2>
-        <Filename Value="..\Source\actions\CurrencyPropertyChange2.pas"/>
+        <Filename Value="..\Source\Changes\CurrencyPropertyChange2.pas"/>
         <UnitName Value="CurrencyPropertyChange2"/>
       </Item2>
       <Item3>
-        <Filename Value="..\Source\actions\DoublePropertyChange.pas"/>
+        <Filename Value="..\Source\Changes\DoublePropertyChange.pas"/>
         <UnitName Value="DoublePropertyChange"/>
       </Item3>
       <Item4>
-        <Filename Value="..\Source\actions\DoublePropertyChange2.pas"/>
+        <Filename Value="..\Source\Changes\DoublePropertyChange2.pas"/>
         <UnitName Value="DoublePropertyChange2"/>
       </Item4>
       <Item5>
-        <Filename Value="..\Source\actions\IntegerPropertyChange.pas"/>
+        <Filename Value="..\Source\Changes\IntegerPropertyChange.pas"/>
         <UnitName Value="IntegerPropertyChange"/>
       </Item5>
       <Item6>
-        <Filename Value="..\Source\actions\LinkedListAddChange.pas"/>
+        <Filename Value="..\Source\Changes\LinkedListAddChange.pas"/>
         <UnitName Value="LinkedListAddChange"/>
       </Item6>
       <Item7>
-        <Filename Value="..\Source\actions\LinkedListRemoveChange.pas"/>
+        <Filename Value="..\Source\Changes\LinkedListRemoveChange.pas"/>
         <UnitName Value="LinkedListRemoveChange"/>
       </Item7>
       <Item8>
-        <Filename Value="..\Source\actions\ListGInsertChange.pas"/>
+        <Filename Value="..\Source\Changes\ListGInsertChange.pas"/>
         <UnitName Value="ListGInsertChange"/>
       </Item8>
       <Item9>
-        <Filename Value="..\Source\actions\ListGRemoveChange.pas"/>
+        <Filename Value="..\Source\Changes\ListGRemoveChange.pas"/>
         <UnitName Value="ListGRemoveChange"/>
       </Item9>
       <Item10>
-        <Filename Value="..\Source\actions\ListInsertChange.pas"/>
+        <Filename Value="..\Source\Changes\ListInsertChange.pas"/>
         <UnitName Value="ListInsertChange"/>
       </Item10>
       <Item11>
-        <Filename Value="..\Source\actions\ListRemoveChange.pas"/>
+        <Filename Value="..\Source\Changes\ListRemoveChange.pas"/>
         <UnitName Value="ListRemoveChange"/>
       </Item11>
       <Item12>
-        <Filename Value="..\Source\actions\MoveUndo.pas"/>
+        <Filename Value="..\Source\Changes\MoveUndo.pas"/>
         <UnitName Value="MoveUndo"/>
       </Item12>
       <Item13>
-        <Filename Value="..\Source\actions\ObjectPropertyChange.pas"/>
+        <Filename Value="..\Source\Changes\ObjectPropertyChange.pas"/>
         <UnitName Value="ObjectPropertyChange"/>
       </Item13>
       <Item14>
-        <Filename Value="..\Source\actions\PropertyObjectDoubleChange.pas"/>
+        <Filename Value="..\Source\Changes\PropertyObjectDoubleChange.pas"/>
         <UnitName Value="PropertyObjectDoubleChange"/>
       </Item14>
       <Item15>
-        <Filename Value="..\Source\actions\PropertyObjectObjectChange.pas"/>
+        <Filename Value="..\Source\Changes\PropertyObjectObjectChange.pas"/>
         <UnitName Value="PropertyObjectObjectChange"/>
       </Item15>
       <Item16>
@@ -83,16 +82,16 @@
         <UnitName Value="UndoRedo"/>
       </Item16>
       <Item17>
-        <Filename Value="..\Source\UndoRedoAction.pas"/>
-        <UnitName Value="UndoRedoAction"/>
-      </Item17>
-      <Item18>
         <Filename Value="..\Source\UndoRedoOperation.pas"/>
         <UnitName Value="UndoRedoOperation"/>
+      </Item17>
+      <Item18>
+        <Filename Value="..\Source\Changes\BooleanPropertyChange.pas"/>
+        <UnitName Value="BooleanPropertyChange"/>
       </Item18>
       <Item19>
-        <Filename Value="..\Source\actions\BooleanPropertyChange.pas"/>
-        <UnitName Value="BooleanPropertyChange"/>
+        <Filename Value="..\Source\Dun.UndoChange.pas"/>
+        <UnitName Value="Dun.UndoChange"/>
       </Item19>
     </Files>
     <CompatibilityMode Value="True"/>

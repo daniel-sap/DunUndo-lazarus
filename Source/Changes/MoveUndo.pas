@@ -3,11 +3,11 @@ unit MoveUndo;
 interface
 
 uses
-  UndoRedoAction, ObserverObjects, ModelObjectList;
+  Dun.UndoChange, ObserverObjects, ModelObjectList;
 
 type
 
-  TUnReDoElementMove = class(TUndoAction)
+  TUnReDoElementMove = class(TUndoChange)
   private
     fList: TModelObjectList<TSubjectObject>;
     fOldIndex: Integer;

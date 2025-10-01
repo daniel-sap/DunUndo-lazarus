@@ -3,11 +3,11 @@ unit PropertyObjectObjectChange;
 interface
 
 uses
-  UndoRedoAction, PropertyObject;
+  Dun.UndoChange, PropertyObject;
 
 type
 
-  TPropertyObjectObjectChange = class(TUndoAction)
+  TPropertyObjectObjectChange = class(TUndoChange)
   private
     fPropertyName: string;
     fOldValue: TObject;

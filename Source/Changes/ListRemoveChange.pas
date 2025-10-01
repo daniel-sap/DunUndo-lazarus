@@ -1,15 +1,15 @@
-unit ListGInsertChange;
+unit ListRemoveChange;
 
 interface
 
 uses
-  UndoRedoAction, ObserverObjects, Generics.Collections;
+  Dun.UndoChange, ObserverObjects, Classes;
 
 type
-  TListGInsertChange = class(TUndoAction)
+  TListRemoveChange = class(TUndoChange)
   private
     fElement: TObject;
-    fList: TList<TObject>;
+    fList: TList;
   public
     fIndex: Integer;
     constructor Create(); override;
@@ -19,32 +19,33 @@ type
     procedure Redo; override;
 
     property Element: TObject read fElement write fElement;
-    property List: TList<TObject> read fList write fList;
+    property List: TList read fList write fList;
   end;
 
 implementation
+
 uses
   SysUtils;
 
-constructor TListGInsertChange.Create();
+constructor TListRemoveChange.Create();
 begin
   inherited Create();
   fElement := nil;
 end;
 
-destructor TListGInsertChange.Destroy;
+destructor TListRemoveChange.Destroy;
 begin
   inherited Destroy;
 end;
 
-procedure TListGInsertChange.Undo;
-begin
-  List.remove(fElement);
-end;
-
-procedure TListGInsertChange.Redo;
+procedure TListRemoveChange.Undo;
 begin
   List.Insert(fIndex, fElement);
+end;
+
+procedure TListRemoveChange.Redo;
+begin
+  List.remove(fElement);
 end;
 
 end.

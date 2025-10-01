@@ -3,11 +3,11 @@ unit IntegerPropertyChange;
 interface
 
 uses
-  UndoRedoAction, Rtti;
+  Dun.UndoChange, Rtti;
 
 type
 
-  TIntegerPropertyChange = class(TUndoAction)
+  TIntegerPropertyChange = class(TUndoChange)
   private
     fChangedObject: TObject;
     fPropertyName: string;
@@ -29,7 +29,7 @@ type
     property NewValue: Integer read fNewValue write fNewValue;
   end;
 
-  TEnumPropertyChange = class(TUndoAction)
+  TEnumPropertyChange = class(TUndoChange)
   private
     fPropertyName: string;
     fNewValue: Integer;

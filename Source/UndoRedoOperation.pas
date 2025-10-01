@@ -3,21 +3,23 @@ unit UndoRedoOperation;
 interface
 
 uses
-  Classes, UndoRedoAction;
+  Classes, Dun.UndoChange;
 
 type
 
+  /// This class allows adding and keeping changes which can be added at once
+  /// at the end. No need to start Action in the TUndoRedo.
   TUndoRedoOperation = class
   private
-    fActions: TList;
+    fChanges: TList;
     function getCount: Integer;
-    function getAction(Index: Integer): TUndoAction;
+    function getChange(Index: Integer): TUndoChange;
   public
     constructor Create; virtual;
     destructor Destroy; override;
-    procedure addAction(aAction: TUndoAction);
+    procedure addChange(aChange: TUndoChange);
     property Count: Integer read getCount;
-    property Actions[Index: Integer]: TUndoAction read getAction; default;
+    property Changes[Index: Integer]: TUndoChange read getChange; default;
   end;
 
 implementation
@@ -27,28 +29,28 @@ uses
 
 constructor TUndoRedoOperation.Create;
 begin
-  fActions := TList.Create();
+  fChanges := TList.Create();
 end;
 
 destructor TUndoRedoOperation.Destroy;
 begin
-  FreeAndNil(fActions);
+  FreeAndNil(fChanges);
   inherited;
 end;
 
-procedure TUndoRedoOperation.addAction(aAction: TUndoAction);
+procedure TUndoRedoOperation.addChange(aChange: TUndoChange);
 begin
-  fActions.Add(aAction);
+  fChanges.Add(aChange);
 end;
 
-function TUndoRedoOperation.getAction(Index: Integer): TUndoAction;
+function TUndoRedoOperation.getChange(Index: Integer): TUndoChange;
 begin
-  Result := TUndoAction(fActions[Index]);
+  Result := TUndoChange(fChanges[Index]);
 end;
 
 function TUndoRedoOperation.getCount: Integer;
 begin
-  Result := fActions.Count;
+  Result := fChanges.Count;
 end;
 
 end.

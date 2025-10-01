@@ -3,11 +3,11 @@ unit BooleanPropertyChange;
 interface
 
 uses
-  UndoRedoAction;
+  Dun.UndoChange;
 
 type
 
-  TBooleanPropertyChange = class(TUndoAction)
+  TBooleanPropertyChange = class(TUndoChange)
   private
     fChangedObject: TObject;
     fPropertyName: string;

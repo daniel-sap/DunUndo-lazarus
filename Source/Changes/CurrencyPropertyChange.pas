@@ -3,11 +3,11 @@ unit CurrencyPropertyChange;
 interface
 
 uses
-  UndoRedoAction;
+  Dun.UndoChange;
 
 type
 
-  TCurrencyPropertyChange = class(TUndoAction)
+  TCurrencyPropertyChange = class(TUndoChange)
   private
     fChangedObject: TObject;
     fPropertyName: string;
