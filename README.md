@@ -28,7 +28,9 @@ Here is a basic guide to integrating the Undo/Redo framework into your applicati
 
 ### 1. Installation
 
-Simply add the `UndoRedo.pas` unit and its dependencies to your project's uses clause.
+* Download and install DunCore package. DunUndo depends on it
+* Install package DunUndo.lpk located in Package folder
+
 
 ### 2. Basic Usage
 
